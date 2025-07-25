@@ -18,6 +18,7 @@ protected:
     float m_speed;
     RepeatMode m_mode;
     cocos2d::CCSize m_visibleSize;
+    cocos2d::CCSize m_textureSize;
 
     bool init(const char* texture, float scale, RepeatMode mode, cocos2d::CCSize visibleSize);
     void update(float dt);

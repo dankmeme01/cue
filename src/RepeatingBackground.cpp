@@ -52,7 +52,7 @@ bool RepeatingBackground::init(const char* texture, float scale, RepeatMode mode
     }
 
     auto bgrect = this->getTextureRect();
-    auto rawTextureSize = this->getContentSize();
+    m_textureSize = this->getContentSize();
 
     bool repeatX = (mode == RepeatMode::X || mode == RepeatMode::Both);
     bool repeatY = (mode == RepeatMode::Y || mode == RepeatMode::Both);
@@ -61,14 +61,14 @@ bool RepeatingBackground::init(const char* texture, float scale, RepeatMode mode
         float minX = m_visibleSize.width * 3.f / scale;
 
         bgrect.size.width = 0;
-        while (bgrect.size.width < minX) bgrect.size.width += rawTextureSize.width;
+        while (bgrect.size.width < minX) bgrect.size.width += m_textureSize.width;
     }
 
     if (repeatY) {
         float minY = m_visibleSize.height * 2.f / scale;
 
         bgrect.size.height = 0;
-        while (bgrect.size.height < minY) bgrect.size.height += rawTextureSize.height;
+        while (bgrect.size.height < minY) bgrect.size.height += m_textureSize.height;
     }
 
     ccTexParams params = {
@@ -80,8 +80,9 @@ bool RepeatingBackground::init(const char* texture, float scale, RepeatMode mode
     this->getTexture()->setTexParameters(&params);
     // this->setContentSize(winSize); // ?
     this->setTextureRect(bgrect);
-    this->setAnchorPoint({0.5f, 0.5f});
+    this->setAnchorPoint({0.0f, 0.0f});
     this->setScale(scale);
+    this->setZOrder(-1);
     this->scheduleUpdate();
 
     return true;
@@ -91,29 +92,29 @@ void RepeatingBackground::update(float dt) {
     bool repeatX = (m_mode == RepeatMode::X || m_mode == RepeatMode::Both);
     bool repeatY = (m_mode == RepeatMode::Y || m_mode == RepeatMode::Both);
 
-    float moveByX = dt * m_speed * m_obContentSize.width / 12.f * (repeatX ? 1.f : 0.f);
-    float moveByY = dt * m_speed * m_obContentSize.height / 15.f * (repeatY ? 1.f : 0.f);
+    float moveByX = dt * m_speed * m_textureSize.width / 12.f * (repeatX ? 1.f : 0.f);
+    float moveByY = dt * m_speed * m_textureSize.height / 15.f * (repeatY ? 1.f : 0.f);
 
     float loopAfterXMin = m_visibleSize.width;
     float loopAfterX = 0.f;
     while (loopAfterX < loopAfterXMin) {
-        loopAfterX += m_obContentSize.width * this->getScale();
+        loopAfterX += m_textureSize.width * this->getScale();
     }
 
     float loopAfterYMin = m_visibleSize.height;
     float loopAfterY = 0.f;
     while (loopAfterY < loopAfterYMin) {
-        loopAfterY += m_obContentSize.height * this->getScale();
+        loopAfterY += m_textureSize.height * this->getScale();
     }
 
     auto newPos = this->getPosition() - CCPoint{moveByX, moveByY};
 
     if (std::abs(newPos.x) > loopAfterX) {
-        newPos.x += m_obContentSize.width * this->getScale();
+        newPos.x += m_textureSize.width * this->getScale();
     }
 
     if (std::abs(newPos.y) > loopAfterY) {
-        newPos.y += m_obContentSize.height * this->getScale();
+        newPos.y += m_textureSize.height * this->getScale();
     }
 
     this->setPosition(newPos);
