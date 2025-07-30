@@ -145,14 +145,14 @@ void ListNode::scrollToBottom() {
 }
 
 void ListNode::updateLayout() {
+    m_scrollLayer->m_contentLayer->updateLayout();
+
     // update cell colors
     for (size_t i = 0; i < this->size(); i++) {
         auto cell = this->getCell(i);
         cell->setColor(into<ccColor3B>(this->getCellColor(i)));
         cell->setZOrder(i);
     }
-
-    m_scrollLayer->m_contentLayer->updateLayout();
 }
 
 ccColor4B ListNode::getCellColor(size_t index) {
