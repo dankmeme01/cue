@@ -33,6 +33,15 @@ bool ListCell::init(CCNode* inner, ListNode* list) {
     return true;
 }
 
+void ListCell::draw() {
+    // i stole this from geode
+    auto size = this->getContentSize();
+    cocos2d::ccDrawColor4B(0, 0, 0, 0x4f);
+    glLineWidth(2.0f);
+    cocos2d::ccDrawLine({ 1.0f, 0.0f }, { size.width - 1.0f, 0.0f });
+    cocos2d::ccDrawLine({ 1.0f, size.height }, { size.width - 1.0f, size.height });
+}
+
 bool ListNode::init(cocos2d::CCSize size, cocos2d::ccColor4B bgColor, ListBorderStyle borderStyle) {
     if (!CCLayer::init()) return false;
 

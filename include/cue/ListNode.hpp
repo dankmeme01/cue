@@ -26,6 +26,7 @@ private:
     CCNode* m_inner;
 
     bool init(CCNode* cell, ListNode* list);
+    void draw() override;
 };
 
 class ListNode : public cocos2d::CCLayer {
