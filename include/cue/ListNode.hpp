@@ -14,6 +14,18 @@ enum class Justify {
     Right,
 };
 
+struct ScrollPos {
+private:
+    friend class ListNode;
+    float val = 0.0f;
+    bool atBottom = false;
+
+    ScrollPos(float val) : val(val), atBottom(false) {}
+    ScrollPos() : val(0.0f), atBottom(true) {}
+
+    operator float() const { return val; }
+};
+
 class ListCell : public cocos2d::CCLayerColor {
 public:
     static ListCell* create(cocos2d::CCNode* cell, ListNode* list);
@@ -99,6 +111,8 @@ public:
     void updateLayout();
 
     // TODO: get/set scroll position
+    ScrollPos getScrollPos();
+    void setScrollPos(ScrollPos pos);
 
     template <typename T>
     void setCellColor(const T& in) {

@@ -164,6 +164,21 @@ void ListNode::updateLayout() {
     }
 }
 
+ScrollPos ListNode::getScrollPos() {
+    auto cl = m_scrollLayer->m_contentLayer;
+    if (cl->getPositionY() > 0.f) return ScrollPos();
+    return ScrollPos(cl->getScaledContentHeight() + cl->getPositionY());
+}
+
+void ListNode::setScrollPos(ScrollPos pos) {
+    if (pos.atBottom) return;
+
+    auto cl = m_scrollLayer->m_contentLayer;
+    float actualPos = pos.val - cl->getScaledContentHeight();
+
+    cl->setPositionY(std::min(actualPos, 0.f));
+}
+
 ccColor4B ListNode::getCellColor(size_t index) {
     return (index % 2 == 0) ? m_evenColor : m_oddColor;
 }
