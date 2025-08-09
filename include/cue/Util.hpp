@@ -23,4 +23,23 @@ void rescaleToMatch(cocos2d::CCNode* node, float targetSize, bool stretch = fals
 void rescaleToMatchX(cocos2d::CCNode* node, float targetWidth);
 void rescaleToMatchY(cocos2d::CCNode* node, float targetHeight);
 
+struct BackgroundOptions {
+    uint8_t opacity = 80;
+    float sidePadding = 3.f;
+    float verticalPadding = 3.f;
+    // 0 = square, 1 = slightly rounded (depends on texture though)
+    float cornerRoundness = 1.f;
+    bool scaleMustMatch = true; // determines if scalex must be equal to scaley (impacts how pretty the corners are)
+    const char* texture = "square02_001.png";
+    int zOrder = -1;
+    std::string id = "bg";
+};
+
+// Attach a CCScale9Sprite to a node
+cocos2d::extension::CCScale9Sprite* attachBackground(
+    cocos2d::CCNode* node,
+    const BackgroundOptions& options = BackgroundOptions{}
+);
+
+
 }
