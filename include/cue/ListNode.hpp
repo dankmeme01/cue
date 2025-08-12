@@ -158,7 +158,7 @@ protected:
 
 public:
     // iterator impl
-    template <typename T> requires (std::derived_from<T, cocos2d::CCNode>)
+    template <typename T, bool Checked> requires (std::derived_from<T, cocos2d::CCNode>)
     class iterator {
     public:
         using iterator_category = std::forward_iterator_tag;
@@ -167,12 +167,27 @@ public:
         using reference = T*&;
         using pointer = T**;
 
-        iterator(cocos2d::CCArray* children, size_t index) : m_array(children), m_index(index) {}
+        iterator(cocos2d::CCArray* children, size_t index) : m_array(children), m_index(index) {
+            this->skipInvalid();
+        }
+
         value_type operator*() const { return get(); }
         value_type operator->() const { return get(); }
         iterator& operator++() {
             ++m_index;
+            this->skipInvalid();
+
             return *this;
+        }
+
+        void skipInvalid() {
+            if (Checked) {
+                auto cnt = m_array->count();
+
+                while (m_index < cnt && !geode::cast::typeinfo_cast<T*>(this->get())) {
+                    m_index++;
+                }
+            }
         }
 
         bool operator==(const iterator& other) const {
@@ -188,10 +203,10 @@ public:
         }
     };
 
-    template <typename T> requires (std::derived_from<T, cocos2d::CCNode>)
+    template <typename T, bool Checked> requires (std::derived_from<T, cocos2d::CCNode>)
     struct Iter {
         ListNode* m_list;
-        using iterator = ListNode::iterator<T>;
+        using iterator = ListNode::iterator<T, Checked>;
 
         iterator begin() {
             return iterator(m_list->getCells(), 0);
@@ -202,9 +217,17 @@ public:
         }
     };
 
+    /// Returns an iterator over children, very similar to `CCArrayExt`.
+    /// Use this if you are certain all cells are of the same type, because it uses `static_cast`.
+    /// If you are not sure, use `iterChecked`, which will skip cells of a different type than given.
     template <typename T> requires (std::derived_from<T, cocos2d::CCNode>)
-    Iter<T> iter() {
-        return Iter<T>{this};
+    Iter<T, false> iter() {
+        return Iter<T, false>{this};
+    }
+    /// Returns an iterator over children, skipping cells that don't match the requested type.
+    template <typename T> requires (std::derived_from<T, cocos2d::CCNode>)
+    Iter<T, true> iterChecked() {
+        return Iter<T, true>{this};
     }
 };
 
