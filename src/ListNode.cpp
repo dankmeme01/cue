@@ -11,6 +11,8 @@ bool ListCell::init(CCNode* inner, ListNode* list) {
 
     float height = inner->getScaledContentHeight();
     this->setContentSize({list->getListSize().width, list->m_cellHeight == 0.f ? height : list->m_cellHeight});
+    this->setCascadeColorEnabled(true);
+    this->setCascadeOpacityEnabled(true);
 
     inner->ignoreAnchorPointForPosition(false);
     this->addChild(inner);
@@ -73,7 +75,30 @@ bool ListNode::init(cocos2d::CCSize size, cocos2d::ccColor4B bgColor, ListBorder
         this->addChild(m_border);
     }
 
+    auto bg = CCLayerColor::create(bgColor, size.width, size.height);
+    bg->setAnchorPoint({0.5f, 0.5f});
+    bg->setPosition(size / 2.f);
+    bg->ignoreAnchorPointForPosition(false);
+    bg->setZOrder(-2);
+    this->addChild(bg);
+
+    this->scheduleUpdate();
+
     return true;
+}
+
+void ListNode::update(float dt) {
+    if (!m_overscroll) {
+        auto cl = m_scrollLayer->m_contentLayer;
+        float ypos = cl->getPositionY();
+        auto cont = this->contentSize();
+
+        if (ypos > 0.f) {
+            cl->setPositionY(0.f);
+        } else if (ypos < -cont) {
+            cl->setPositionY(-cont);
+        }
+    }
 }
 
 size_t ListNode::size() {
@@ -90,8 +115,12 @@ CCArray* ListNode::getCells() {
     return m_scrollLayer->m_contentLayer->getChildren();
 }
 
-void ListNode::addCell(CCNode* cell) {
-    if (cell) this->addListCell(ListCell::create(cell, this));
+ListCell* ListNode::addCell(CCNode* cell) {
+    if (!cell) return nullptr;
+
+    auto lc = ListCell::create(cell, this);
+    this->addListCell(lc);
+    return lc;
 }
 
 void ListNode::addListCell(ListCell* cell) {
@@ -123,7 +152,7 @@ void ListNode::removeCell(size_t index) {
 }
 
 void ListNode::removeCell(ListCell* cell) {
-    size_t idx = cell->getZOrder();
+    size_t idx = this->indexForCell(cell);
 
     // move all the cells after the index one step up
     for (size_t i = idx + 1; i < this->size(); i++) {
@@ -132,6 +161,10 @@ void ListNode::removeCell(ListCell* cell) {
 
     m_scrollLayer->m_contentLayer->removeChild(cell);
     if (m_autoUpdate) this->updateLayout();
+}
+
+size_t ListNode::indexForCell(ListCell* cell) {
+    return cell->getZOrder();
 }
 
 void ListNode::clear() {
@@ -145,12 +178,21 @@ void ListNode::shuffle() {
 
 void ListNode::scrollToTop() {
     auto cl = m_scrollLayer->m_contentLayer;
-    cl->setPositionY(cl->getParent()->getScaledContentHeight() - cl->getScaledContentHeight());
+    cl->setPositionY(-this->contentSize());
+}
+
+float ListNode::contentSize() {
+    auto cl = m_scrollLayer->m_contentLayer;
+    return - (cl->getParent()->getScaledContentHeight() - cl->getScaledContentHeight());
 }
 
 void ListNode::scrollToBottom() {
     auto cl = m_scrollLayer->m_contentLayer;
     cl->setPositionY(0);
+}
+
+void ListNode::setOverscrollEnabled(bool enabled) {
+    m_overscroll = enabled;
 }
 
 void ListNode::updateLayout() {

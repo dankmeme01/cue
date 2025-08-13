@@ -5,6 +5,7 @@
 namespace cue {
 
 enum class ListBorderStyle {
+    None,
     Default,
     Comments,
     CommentsBlue,

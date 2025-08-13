@@ -17,6 +17,8 @@ enum class Justify {
 struct ScrollPos {
 private:
     friend class ListNode;
+    friend class DropdownNode;
+
     float val = 0.0f;
     bool atBottom = false;
 
@@ -51,7 +53,7 @@ public:
 
     // Add an arbitrary type as a cell to the list
     // Equivalent to `addListCell(ListCell::create(cell))`
-    void addCell(CCNode* cell);
+    ListCell* addCell(CCNode* cell);
 
     // Add a ListCell to the list
     void addListCell(ListCell* cell);
@@ -66,6 +68,9 @@ public:
     // Remove a cell at the specified index
     void removeCell(size_t index);
     void removeCell(ListCell* cell);
+
+    // Retrieve the index of a cell
+    size_t indexForCell(ListCell* cell);
 
     // Remove all cells from the list
     void clear();
@@ -107,6 +112,8 @@ public:
 
     void scrollToTop();
     void scrollToBottom();
+
+    void setOverscrollEnabled(bool enabled);
 
     void updateLayout();
 
@@ -151,8 +158,11 @@ protected:
     float m_cellHeight = 0.0f;
     Justify m_justify = Justify::Left;
     bool m_autoUpdate = true;
+    bool m_overscroll = true;
 
     bool init(cocos2d::CCSize size, cocos2d::ccColor4B bgColor, ListBorderStyle borderStyle);
+    void update(float dt);
+    float contentSize();
 
     cocos2d::ccColor4B getCellColor(size_t index);
 
