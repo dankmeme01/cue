@@ -3,6 +3,7 @@
 #include <Geode/Geode.hpp>
 #include "Util.hpp"
 #include "ListBorder.hpp"
+#include "Colors.hpp"
 
 namespace cue {
 
