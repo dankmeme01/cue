@@ -8,7 +8,7 @@ struct Icons {
     IconType type = IconType::Cube;
     int id = 1;
     int color1 = 1, color2 = 3;
-    int glowColor = -1; // 0 = glow with no color, -1 = no glow, > 0 = glow with color
+    int glowColor = -1; // -1 = no glow, >= 0 = glow with color
 };
 
 class PlayerIcon : public SimplePlayer {
