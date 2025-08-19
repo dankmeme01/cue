@@ -31,7 +31,7 @@ private:
 
 class ListCell : public cocos2d::CCLayerColor {
 public:
-    static ListCell* create(cocos2d::CCNode* cell, ListNode* list);
+    static ListCell* create(CCNode* cell, ListNode* list);
 
     inline CCNode* getInner() {
         return m_inner;
@@ -39,6 +39,7 @@ public:
 
 private:
     CCNode* m_inner;
+    CCNode* m_bg;
 
     bool init(CCNode* cell, ListNode* list);
     void draw() override;

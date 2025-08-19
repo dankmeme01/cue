@@ -5,14 +5,16 @@ using namespace geode::prelude;
 namespace cue {
 
 bool ListCell::init(CCNode* inner, ListNode* list) {
-    if (!CCLayerColor::initWithColor(ccColor4B{255, 255, 255, 255})) return false;
+    float height = inner->getScaledContentHeight();
+    CCSize selfSize{list->getListSize().width, list->m_cellHeight == 0.f ? height : list->m_cellHeight};
+
+    if (!CCLayerColor::initWithColor(ccColor4B{255, 255, 255, 255}, selfSize.width, selfSize.height)) return false;
 
     m_inner = inner;
 
-    float height = inner->getScaledContentHeight();
-    this->setContentSize({list->getListSize().width, list->m_cellHeight == 0.f ? height : list->m_cellHeight});
-    this->setCascadeColorEnabled(true);
-    this->setCascadeOpacityEnabled(true);
+    this->setContentSize(selfSize);
+    this->setCascadeColorEnabled(false);
+    this->setCascadeOpacityEnabled(false);
 
     inner->ignoreAnchorPointForPosition(false);
     this->addChild(inner);
@@ -36,6 +38,8 @@ bool ListCell::init(CCNode* inner, ListNode* list) {
 }
 
 void ListCell::draw() {
+    CCLayerColor::draw();
+
     // i stole this from geode
     auto size = this->getContentSize();
     cocos2d::ccDrawColor4B(0, 0, 0, 0x4f);
