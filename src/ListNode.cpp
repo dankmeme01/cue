@@ -225,6 +225,10 @@ void ListNode::setScrollPos(ScrollPos pos) {
     cl->setPositionY(std::min(actualPos, 0.f));
 }
 
+bool ListNode::isAtTop() {
+    return std::abs(m_scrollLayer->m_contentLayer->getPositionY()) < 0.01f;
+}
+
 ccColor4B ListNode::getCellColor(size_t index) {
     return (index % 2 == 0) ? m_evenColor : m_oddColor;
 }

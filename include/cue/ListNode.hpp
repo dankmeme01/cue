@@ -19,6 +19,7 @@ struct ScrollPos {
 public:
     bool operator==(const ScrollPos&) const = default;
 
+
 private:
     friend class ListNode;
     friend class DropdownNode;
@@ -122,9 +123,10 @@ public:
 
     void updateLayout();
 
-    // TODO: get/set scroll position
     ScrollPos getScrollPos();
     void setScrollPos(ScrollPos pos);
+
+    bool isAtTop();
 
     template <typename T>
     void setCellColor(const T& in) {
