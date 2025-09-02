@@ -16,6 +16,9 @@ enum class Justify {
 };
 
 struct ScrollPos {
+public:
+    bool operator==(const ScrollPos&) const = default;
+
 private:
     friend class ListNode;
     friend class DropdownNode;
@@ -27,7 +30,6 @@ private:
     ScrollPos() : val(0.0f), atBottom(true) {}
 
     operator float() const { return val; }
-    bool operator==(const ScrollPos&) const = default;
 };
 
 class ListCell : public cocos2d::CCLayerColor {
