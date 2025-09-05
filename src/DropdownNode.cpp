@@ -2,6 +2,8 @@
 
 using namespace geode::prelude;
 
+// TODO: fix scroll wheel
+
 namespace cue {
 
 constexpr static float DELTA_ALLOWANCE = 20.f;
@@ -18,7 +20,7 @@ bool DropdownNode::init(cocos2d::ccColor4B bgColor, float width, float cellHeigh
     m_list->setPosition(width / 2.f, expandedHeight / 2.f);
     m_list->setVisible(false);
     m_list->setOverscrollEnabled(false);
-    m_list->setCellColor(ccColor4B{255, 255, 255, 255});
+    m_list->setCellColor(ccColor4B{0, 0, 0, 0});
     this->addChild(m_list);
 
     auto bg = CCLayerColor::create(bgColor, width, cellHeight);
@@ -94,7 +96,14 @@ void DropdownNode::selectCell(ListCell* cell) {
 
 bool DropdownNode::ccTouchBegan(cocos2d::CCTouch *pTouch, cocos2d::CCEvent *pEvent) {
     auto pos = this->convertTouchToNodeSpace(pTouch);
-    if (pos.x < 0 || pos.x > m_fullSize.width || pos.y < 0 || pos.y > m_fullSize.height) return false;
+    if (pos.x < 0 || pos.x > m_fullSize.width || pos.y < 0 || pos.y > m_fullSize.height) {
+        // touch out of bounds, close the dropdown if it's open
+        if (this->isExpanded()) {
+            this->setExpanded(false);
+        }
+
+        return false;
+    }
 
     m_trackedTouch = pos;
     m_accumulatedTouchDelta = 0.f;
@@ -169,7 +178,7 @@ void DropdownNode::unselectHeld() {
     if (!m_heldCell) return;
 
     m_heldCell->stopAllActions();
-    m_heldCell->setOpacity(255);
+    m_heldCell->setOpacity(0);
     m_heldCell = nullptr;
 }
 

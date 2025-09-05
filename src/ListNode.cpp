@@ -143,7 +143,10 @@ void ListNode::insertListCell(ListCell* cell, size_t index) {
         this->getCell(i)->setZOrder(i + 1);
     }
 
-    cell->setColor(into<ccColor3B>(this->getCellColor(index)));
+    auto col = this->getCellColor(index);
+    cell->setColor(into<ccColor3B>(col));
+    cell->setOpacity(col.a);
+
     m_scrollLayer->m_contentLayer->addChild(cell, index);
 
     if (m_autoUpdate) this->updateLayout();
@@ -205,7 +208,9 @@ void ListNode::updateLayout() {
     // update cell colors
     for (size_t i = 0; i < this->size(); i++) {
         auto cell = this->getCell(i);
-        cell->setColor(into<ccColor3B>(this->getCellColor(i)));
+        auto col = this->getCellColor(i);
+        cell->setColor(into<ccColor3B>(col));
+        cell->setOpacity(col.a);
         cell->setZOrder(i);
     }
 }
