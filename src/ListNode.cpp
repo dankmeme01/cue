@@ -202,8 +202,14 @@ void ListNode::setOverscrollEnabled(bool enabled) {
     m_overscroll = enabled;
 }
 
-void ListNode::updateLayout() {
+void ListNode::updateLayout(bool preserveScroll) {
+    auto scroll = this->getScrollPos();
+
     m_scrollLayer->m_contentLayer->updateLayout();
+
+    if (preserveScroll) {
+        this->setScrollPos(scroll);
+    }
 
     // update cell colors
     for (size_t i = 0; i < this->size(); i++) {

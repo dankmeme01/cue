@@ -121,7 +121,7 @@ public:
 
     void setOverscrollEnabled(bool enabled);
 
-    void updateLayout();
+    void updateLayout(bool preserveScroll = true);
 
     ScrollPos getScrollPos();
     void setScrollPos(ScrollPos pos);
