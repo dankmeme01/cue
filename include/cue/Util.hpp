@@ -41,5 +41,13 @@ cocos2d::extension::CCScale9Sprite* attachBackground(
     const BackgroundOptions& options = BackgroundOptions{}
 );
 
+// Call removeFromParent on the node and set it to null. Does nothing if null.
+template <typename T> requires (std::derived_from<T, cocos2d::CCNode>)
+void resetNode(T*& node) {
+    if (node) {
+        node->removeFromParent();
+        node = nullptr;
+    }
+}
 
 }
