@@ -59,6 +59,8 @@ bool ListNode::init(cocos2d::CCSize size, cocos2d::ccColor4B bgColor, ListBorder
     );
 
     m_scrollLayer = ScrollLayer::create(size);
+    m_scrollLayer->ignoreAnchorPointForPosition(false);
+    m_scrollLayer->setAnchorPoint({0.f, 0.f});
     this->addChild(m_scrollLayer);
 
     m_scrollLayer->m_contentLayer->setLayout(
@@ -80,11 +82,11 @@ bool ListNode::init(cocos2d::CCSize size, cocos2d::ccColor4B bgColor, ListBorder
     }
 
     auto bg = CCLayerColor::create(bgColor, size.width, size.height);
-    bg->setAnchorPoint({0.5f, 0.5f});
-    bg->setPosition(size / 2.f);
+    bg->setAnchorPoint({0.f, 0.f});
     bg->ignoreAnchorPointForPosition(false);
     bg->setZOrder(-2);
     this->addChild(bg);
+    m_bg = bg;
 
     this->scheduleUpdate();
 
@@ -95,6 +97,7 @@ void ListNode::update(float dt) {
     if (!m_overscroll) {
         auto cl = m_scrollLayer->m_contentLayer;
         float ypos = cl->getPositionY();
+        // auto cont = std::max(this->contentSize(), this->getContentHeight());
         auto cont = this->contentSize();
 
         if (ypos > 0.f) {
@@ -242,6 +245,16 @@ bool ListNode::isAtTop() {
 
 ccColor4B ListNode::getCellColor(size_t index) {
     return (index % 2 == 0) ? m_evenColor : m_oddColor;
+}
+
+void ListNode::setFullHeight(float height) {
+    this->setContentHeight(height);
+    m_scrollLayer->setContentHeight(height);
+    m_bg->setContentHeight(height);
+
+    auto layout = static_cast<AxisLayout*>(m_scrollLayer->m_contentLayer->getLayout());
+    layout->setAutoGrowAxis(height);
+    m_scrollLayer->m_contentLayer->updateLayout();
 }
 
 ListCell* ListCell::create(cocos2d::CCNode* inner, ListNode* list) {

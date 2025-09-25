@@ -13,34 +13,47 @@ bool DropdownNode::init(cocos2d::ccColor4B bgColor, float width, float cellHeigh
 
     m_fullSize = CCSize{width, expandedHeight + cellHeight};
     m_cellSize = CCSize{width, cellHeight};
+    m_expandedHeight = expandedHeight;
+
+    auto layout = ColumnLayout::create()->setGap(0.f);
+    layout->ignoreInvisibleChildren(true);
+    m_layoutContainer = CCNode::create();
+    m_layoutContainer->setContentSize(m_fullSize);
+    m_layoutContainer->setLayout(layout);
+    m_layoutContainer->setAnchorPoint({0.f, 0.f});
+    this->addChild(m_layoutContainer);
 
     m_list = ListNode::create({width, expandedHeight}, bgColor, ListBorderStyle::None);
     m_list->setCellHeight(cellHeight);
-    m_list->setAnchorPoint({0.5f, 0.5f});
-    m_list->setPosition(width / 2.f, expandedHeight / 2.f);
+    m_list->setAnchorPoint({0.5f, 1.0f});
+    m_list->setPosition(width / 2.f, expandedHeight);
     m_list->setVisible(false);
     m_list->setOverscrollEnabled(false);
     m_list->setCellColor(ccColor4B{0, 0, 0, 0});
-    this->addChild(m_list);
+    m_list->setZOrder(-999999999);
+    m_layoutContainer->addChild(m_list);
 
     auto bg = CCLayerColor::create(bgColor, width, cellHeight);
-    bg->setAnchorPoint({0.f, 1.f});
+    bg->setAnchorPoint({0.f, 0.f});
     bg->ignoreAnchorPointForPosition(false);
-    bg->setPosition(0.f, m_fullSize.height);
+    bg->setPosition(0.f, 0.f);
     bg->setZOrder(-2);
     this->addChild(bg);
+    m_cellBg = bg;
 
     auto arrow = CCSprite::createWithSpriteFrameName("edit_downBtn_001.png");
     arrow->setScale(0.8f);
-    arrow->setPosition(m_fullSize - CCPoint{15.f, m_cellSize.height / 2.f});
+    arrow->setPosition({width - 15.f, m_cellSize.height / 2.f});
     arrow->setZOrder(3);
-    this->addChild(arrow);
+    m_cellBg->addChild(arrow);
 
     this->setAnchorPoint({0.5f, 0.5f});
     this->setContentSize(m_fullSize);
     this->ignoreAnchorPointForPosition(false);
     this->setTouchEnabled(true);
     this->setTouchMode(cocos2d::kCCTouchesOneByOne);
+
+    this->setExpanded(false);
 
     return true;
 }
@@ -57,9 +70,23 @@ void DropdownNode::setExpanded(bool expand) {
     m_list->setVisible(expand);
 
     if (expand) {
+
+        // set the size of the list to the size of the contents
+        float height = std::min(m_expandedHeight, m_list->size() * m_cellSize.height);
+        m_list->setFullHeight(height);
+
+        m_layoutContainer->setContentHeight(m_cellSize.height + height);
+        this->setContentHeight(m_cellSize.height + height);
+        m_cellBg->setPositionY(height);
+
         m_list->scrollToTop();
+    } else {
+        m_layoutContainer->setContentHeight(m_cellSize.height);
+        this->setContentHeight(m_cellSize.height);
+        m_cellBg->setPositionY(0.f);
     }
 
+    m_layoutContainer->updateLayout();
     this->unselectHeld();
 }
 
@@ -83,11 +110,13 @@ void DropdownNode::selectCell(ListCell* cell) {
     }
 
     m_selected = cell;
+    m_selected->setVisible(true);
     m_selectedIdx = m_list->indexForCell(cell);
     m_list->removeCell(cell);
 
     m_selected->setPosition(m_fullSize.width / 2.f, m_fullSize.height - m_cellSize.height / 2.f);
-    this->addChild(m_selected);
+    m_layoutContainer->addChild(m_selected);
+    m_layoutContainer->updateLayout();
 
     if (m_callback) {
         m_callback(m_selectedIdx, m_selected->getInner());
@@ -96,6 +125,7 @@ void DropdownNode::selectCell(ListCell* cell) {
 
 bool DropdownNode::ccTouchBegan(cocos2d::CCTouch *pTouch, cocos2d::CCEvent *pEvent) {
     auto pos = this->convertTouchToNodeSpace(pTouch);
+
     if (pos.x < 0 || pos.x > m_fullSize.width || pos.y < 0 || pos.y > m_fullSize.height) {
         // touch out of bounds, close the dropdown if it's open
         if (this->isExpanded()) {
@@ -141,11 +171,12 @@ void DropdownNode::ccTouchEnded(cocos2d::CCTouch *pTouch, cocos2d::CCEvent *pEve
     auto pos = this->convertTouchToNodeSpace(pTouch);
     m_trackedTouch = std::nullopt;
 
-    if (pos.x < 0 || pos.x > m_fullSize.width || pos.y < 0 || pos.y > m_fullSize.height) return;
-
     bool expanded = this->isExpanded();
 
-    if (pos.y > m_fullSize.height - m_cellSize.height) {
+    auto selfSize = this->getContentSize();
+    if (pos.x < 0 || pos.x > selfSize.width || pos.y < 0 || pos.y > selfSize.height) return;
+
+    if (pos.y > selfSize.height - m_cellSize.height) {
         // toggle expanded state
         this->setExpanded(!expanded);
         return;

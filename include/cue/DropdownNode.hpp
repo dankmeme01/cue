@@ -23,8 +23,11 @@ private:
     geode::Ref<ListCell> m_selected;
     cocos2d::CCSize m_fullSize;
     cocos2d::CCSize m_cellSize;
+    float m_expandedHeight = 0.f;
     size_t m_selectedIdx = 0;
     Callback m_callback;
+    CCNode* m_layoutContainer;
+    CCNode* m_cellBg;
 
     std::optional<cocos2d::CCPoint> m_trackedTouch;
     float m_accumulatedTouchDelta = 0.f;

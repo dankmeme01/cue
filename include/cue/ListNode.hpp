@@ -139,6 +139,8 @@ public:
         m_oddColor = cue::into<cocos2d::ccColor4B>(odd);
     }
 
+    void setFullHeight(float height);
+
     inline void setCellHeight(float height) {
         m_cellHeight = height;
     }
@@ -161,6 +163,7 @@ protected:
     geode::ScrollLayer* m_scrollLayer;
     geode::Ref<ListBorder> m_border;
     cocos2d::ccColor4B m_evenColor, m_oddColor;
+    cocos2d::CCLayerColor* m_bg;
     cocos2d::CCSize m_size;
     float m_cellHeight = 0.0f;
     Justify m_justify = Justify::Left;
