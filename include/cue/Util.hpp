@@ -50,4 +50,13 @@ void resetNode(T*& node) {
     }
 }
 
+// Call removeFromParent on the node and set it to null. Does nothing if null.
+template <typename T> requires (std::derived_from<T, cocos2d::CCNode>)
+void resetNode(geode::Ref<T>& node) {
+    if (node) {
+        node->removeFromParent();
+        node = nullptr;
+    }
+}
+
 }
