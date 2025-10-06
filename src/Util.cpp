@@ -48,7 +48,7 @@ CCScale9Sprite* attachBackground(
 ) {
     if (!node) return nullptr;
 
-    CCSize rawSize = node->getScaledContentSize();
+    CCSize rawSize = node->getContentSize();
     rawSize.width += options.sidePadding * 2;
     rawSize.height += options.verticalPadding * 2;
 
@@ -77,7 +77,7 @@ CCScale9Sprite* attachBackground(
         scaleX = scaleY = std::min(scaleX, scaleY);
     }
 
-    spr->setPosition(node->getScaledContentSize() / 2.f);
+    spr->setPosition(node->getContentSize() / 2.f);
     spr->setContentSize({rawSize.width / scaleX, rawSize.height / scaleY});
     spr->setScaleX(scaleX);
     spr->setScaleY(scaleY);
