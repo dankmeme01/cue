@@ -34,6 +34,7 @@ public:
     void setValue(double value);
     void setValueRaw(double value);
 
+    void setStep(double step);
 
     bool ccTouchBegan(cocos2d::CCTouch* touch, cocos2d::CCEvent* event) override;
     void ccTouchEnded(cocos2d::CCTouch* touch, cocos2d::CCEvent* event) override;
@@ -56,6 +57,7 @@ public:
 private:
     double m_rangeStart = 0.0;
     double m_rangeEnd = 1.0;
+    double m_step = 0.0;
     Thumb* m_thumb = nullptr;
     Callback callback;
     float m_thumbCorrection = 0.f;
@@ -70,6 +72,10 @@ private:
     );
 
     void setup(cocos2d::CCSize size);
+
+    inline double scaledStep() {
+        return m_step / (m_rangeEnd - m_rangeStart);
+    }
 };
 
 }

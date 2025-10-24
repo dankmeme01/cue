@@ -9,6 +9,13 @@ namespace cue {
 
 using Thumb = Slider::Thumb;
 
+static double snapToStep(double value, double step) {
+    if (step <= 0.0) return value;
+
+    double stepCount = std::round(value / step);
+    return stepCount * step;
+}
+
 bool Slider::init(
     const char* start,
     const char* middle,
@@ -67,8 +74,9 @@ void Slider::setCallback(const Callback& cb) {
 
 double Slider::getValue() {
     double rawv = this->getValueRaw();
+    double scaled = m_rangeStart + (m_rangeEnd - m_rangeStart) * rawv;
 
-    return m_rangeStart + (m_rangeEnd - m_rangeStart) * rawv;
+    return snapToStep(scaled, this->scaledStep());
 }
 
 double Slider::getValueRaw() {
@@ -77,13 +85,21 @@ double Slider::getValueRaw() {
 
 void Slider::setValue(double value) {
     double diff = m_rangeEnd - m_rangeStart;
-    this->setValueRaw((value - m_rangeStart) / diff);
+    double step = this->scaledStep();
+    double unsnapped = std::clamp((value - m_rangeStart) / diff, 0.0, 1.0);
+
+    // snap to step and set
+    this->setValueRaw(snapToStep(unsnapped, step));
 }
 
 void Slider::setValueRaw(double value) {
     ProgressBar::setValue(value);
 
     m_thumb->setPositionX(KNOB_PAD + (this->getContentWidth() - KNOB_PAD * 2) * ProgressBar::getValue());
+}
+
+void Slider::setStep(double step) {
+    m_step = step;
 }
 
 bool Slider::ccTouchBegan(CCTouch* touch, CCEvent* event) {
@@ -119,20 +135,22 @@ void Slider::ccTouchEnded(cocos2d::CCTouch* touch, cocos2d::CCEvent* event) {
 void Slider::ccTouchMoved(CCTouch* touch, CCEvent* event) {
     CCMenu::ccTouchMoved(touch, event);
 
+    if (!m_thumb->isHeld()) {
+        return;
+    }
+
     // move the slider knob if it's selected
-    if (m_thumb->isHeld()) {
-        auto relX = this->convertTouchToNodeSpace(touch).x - KNOB_PAD;
-        float maxw = this->getContentSize().width - KNOB_PAD * 2;
 
-        relX = std::clamp(relX + m_thumbCorrection, 0.f, maxw);
+    auto relX = this->convertTouchToNodeSpace(touch).x - KNOB_PAD;
+    float maxw = this->getContentSize().width - KNOB_PAD * 2;
 
-        double rawFill = relX / maxw;
+    relX = std::clamp(relX + m_thumbCorrection, 0.f, maxw);
+    double rawFill = relX / maxw;
 
-        this->setValueRaw(rawFill);
+    this->setValueRaw(snapToStep(rawFill, this->scaledStep()));
 
-        if (callback) {
-            callback(this, this->getValue());
-        }
+    if (callback) {
+        callback(this, this->getValue());
     }
 }
 
