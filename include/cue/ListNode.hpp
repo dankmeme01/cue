@@ -51,7 +51,15 @@ private:
 
 class ListNode : public cocos2d::CCLayer {
 public:
-    static ListNode* create(cocos2d::CCSize size, cocos2d::ccColor4B bgColor, ListBorderStyle borderStyle = ListBorderStyle::Default);
+    /// Create a `ListNode` with specified size, background color, and border style.
+    /// By default is equivalent to `createComments`.
+    static ListNode* create(cocos2d::CCSize size, cocos2d::ccColor4B bgColor = Brown, ListBorderStyle borderStyle = ListBorderStyle::Comments);
+
+    /// Create a `ListNode` styled for comments, using a brown background and comment border style.
+    static ListNode* createComments(cocos2d::CCSize size);
+
+    /// Create a `ListNode` styled for levels, using a brown background and the green-blue border style seen in the game.
+    static ListNode* createLevels(cocos2d::CCSize size);
 
     size_t size();
     ListCell* getCell(size_t index);

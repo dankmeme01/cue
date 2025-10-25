@@ -257,7 +257,7 @@ void ListNode::setFullHeight(float height) {
     m_scrollLayer->m_contentLayer->updateLayout();
 }
 
-ListCell* ListCell::create(cocos2d::CCNode* inner, ListNode* list) {
+ListCell* ListCell::create(CCNode* inner, ListNode* list) {
     auto ret = new ListCell();
     if (ret->init(inner, list)) {
         ret->autorelease();
@@ -268,7 +268,7 @@ ListCell* ListCell::create(cocos2d::CCNode* inner, ListNode* list) {
     return nullptr;
 }
 
-ListNode* ListNode::create(cocos2d::CCSize size, cocos2d::ccColor4B bgColor, ListBorderStyle borderStyle) {
+ListNode* ListNode::create(CCSize size, ccColor4B bgColor, ListBorderStyle borderStyle) {
     auto ret = new ListNode();
     if (ret->init(size, bgColor, borderStyle)) {
         ret->autorelease();
@@ -277,6 +277,14 @@ ListNode* ListNode::create(cocos2d::CCSize size, cocos2d::ccColor4B bgColor, Lis
 
     delete ret;
     return nullptr;
+}
+
+ListNode* ListNode::createComments(CCSize size) {
+    return create(size, Brown, ListBorderStyle::Comments);
+}
+
+ListNode* ListNode::createLevels(CCSize size) {
+    return create(size, Brown, ListBorderStyle::Levels);
 }
 
 }
