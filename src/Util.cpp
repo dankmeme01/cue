@@ -51,7 +51,18 @@ CCScale9Sprite* attachBackground(
     CCSize rawSize = node->getContentSize();
     rawSize.width += options.sidePadding * 2;
     rawSize.height += options.verticalPadding * 2;
+    auto spr = createBackground(rawSize, options);
 
+    spr->setPosition(node->getContentSize() / 2.f);
+    node->addChild(spr);
+
+    return spr;
+}
+
+CCScale9Sprite* createBackground(
+    CCSize size,
+    const BackgroundOptions& options
+) {
     // now, we have some annoying math to figure out.
     // at 1x scale, if `rawSize` is small enough, the parts of the ccscale9sprite will overlap with each other, which is very unwanted.
     // on top of that, the `cornerRoundness` parameter will also impact the scale of the sprite,
@@ -65,26 +76,24 @@ CCScale9Sprite* attachBackground(
     auto spr = CCScale9Sprite::create(options.texture);
     auto bgSize = spr->getContentSize();
 
-    if (rawSize.width < bgSize.width) {
-        scaleX = rawSize.width / bgSize.width;
+    if (size.width < bgSize.width) {
+        scaleX = size.width / bgSize.width;
     }
 
-    if (rawSize.height < bgSize.height) {
-        scaleY = rawSize.height / bgSize.height;
+    if (size.height < bgSize.height) {
+        scaleY = size.height / bgSize.height;
     }
 
     if (options.scaleMustMatch) {
         scaleX = scaleY = std::min(scaleX, scaleY);
     }
 
-    spr->setPosition(node->getContentSize() / 2.f);
-    spr->setContentSize({rawSize.width / scaleX, rawSize.height / scaleY});
+    spr->setContentSize({size.width / scaleX, size.height / scaleY});
     spr->setScaleX(scaleX);
     spr->setScaleY(scaleY);
     spr->setOpacity(options.opacity);
     spr->setZOrder(options.zOrder);
     spr->setID(options.id);
-    node->addChild(spr);
 
     return spr;
 }
