@@ -105,6 +105,10 @@ void Slider::setStep(double step) {
 bool Slider::ccTouchBegan(CCTouch* touch, CCEvent* event) {
     CCMenu::ccTouchBegan(touch, event);
 
+    if (!cocos::nodeIsVisible(this)) {
+        return false;
+    }
+
     // ok so
     auto relpos = this->convertTouchToNodeSpace(touch);
     auto knobSize = m_thumb->getScaledContentSize();

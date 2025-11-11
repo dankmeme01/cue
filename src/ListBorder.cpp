@@ -28,8 +28,13 @@ bool ListBorder::init(Type type, cocos2d::CCSize size, cocos2d::ccColor4B color)
             this->addChild(border);
         } break;
 
-        case Type::Default: {
-            auto top = CCSprite::createWithSpriteFrameName("GJ_table_top_001.png");
+        case Type::Levels:
+        case Type::SlimLevels: {
+            bool slim = type == Type::SlimLevels;
+
+            auto top = CCSprite::createWithSpriteFrameName(
+                slim ? "GJ_table_top02_001.png" : "GJ_table_top_001.png"
+            );
             auto bottom = CCSprite::createWithSpriteFrameName("GJ_table_bottom_001.png");
             auto left = CCSprite::createWithSpriteFrameName("GJ_table_side_001.png");
             auto right = CCSprite::createWithSpriteFrameName("GJ_table_side_001.png");

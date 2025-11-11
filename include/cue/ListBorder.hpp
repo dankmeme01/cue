@@ -6,11 +6,13 @@ namespace cue {
 
 enum class ListBorderStyle {
     None = 0,
-    Default = 1,
     Levels = 1,
+    SlimLevels = 4,
 
     Comments = 2,
     CommentsBlue = 3,
+
+    Default = Levels,
 };
 
 class ListBorder : public cocos2d::CCNode {
