@@ -214,13 +214,19 @@ void ListNode::updateLayout(bool preserveScroll) {
         this->setScrollPos(scroll);
     }
 
-    // update cell colors
+    // update cell colors and heights
     for (size_t i = 0; i < this->size(); i++) {
         auto cell = this->getCell(i);
         auto col = this->getCellColor(i);
         cell->setColor(into<ccColor3B>(col));
         cell->setOpacity(col.a);
         cell->setZOrder(i);
+
+        cell->setContentHeight(
+            m_cellHeight == 0.f
+                ? cell->getInner()->getScaledContentHeight()
+                : m_cellHeight
+        );
     }
 }
 
