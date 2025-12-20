@@ -73,4 +73,20 @@ void resetNode(geode::Ref<T>& node) {
     }
 }
 
+// Returns (node->x, node->y + node->height / 2.f + offset)
+inline cocos2d::CCPoint fromTop(cocos2d::CCNode* node, float offset = 0.f) {
+    return {
+        node->getPositionX(),
+        node->getPositionY() + node->getScaledContentHeight() / 2.f + offset
+    };
+}
+
+// Returns (node->x, node->y - node->height / 2.f - offset)
+inline cocos2d::CCPoint fromBottom(cocos2d::CCNode* node, float offset = 0.f) {
+    return {
+        node->getPositionX(),
+        node->getPositionY() - node->getScaledContentHeight() / 2.f - offset
+    };
+}
+
 }
