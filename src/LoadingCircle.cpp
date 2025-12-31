@@ -41,6 +41,7 @@ void LoadingCircle::addToLayer(cocos2d::CCNode* layer, int zOrder) {
 }
 
 void LoadingCircle::fadeOut() {
+    this->stopAllActions();
     this->runAction(
         CCSequence::create(
             CCFadeTo::create(0.25f, 0),
