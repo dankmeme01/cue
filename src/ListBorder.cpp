@@ -1,3 +1,4 @@
+#include <Geode/utils/string.hpp> // awesome geode fix
 #include <Geode/utils/terminate.hpp>
 #include <cue/ListBorder.hpp>
 
