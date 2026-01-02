@@ -1,5 +1,8 @@
 #pragma once
+#include <Geode/utils/cocos.hpp>
+#include <Geode/cocos/extensions/GUI/CCControlExtension/CCScale9Sprite.h> // bruh
 #include <type_traits>
+#include <string>
 
 namespace cue {
 
