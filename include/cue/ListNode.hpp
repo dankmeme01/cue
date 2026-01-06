@@ -210,7 +210,7 @@ public:
 
         void skipInvalid() {
             if constexpr (Checked) {
-                auto cnt = m_array->count();
+                auto cnt = m_array ? m_array->count() : 0;
 
                 while (m_index < cnt && !geode::cast::typeinfo_cast<T*>(this->get())) {
                     m_index++;
