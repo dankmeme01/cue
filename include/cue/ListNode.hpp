@@ -107,6 +107,9 @@ public:
             cell->setZOrder(i);
         }
 
+        // little hack to update the children order
+        m_scrollLayer->m_contentLayer->sortAllChildren();
+
         if (m_autoUpdate) {
             this->updateLayout();
         }
