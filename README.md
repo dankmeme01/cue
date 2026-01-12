@@ -14,6 +14,15 @@ Currently available:
 * `cue::ProgressBar` - a simple resizable progress bar class, similar to the one GD has
 * `cue::Slider` - a convenient slider class, allows to set value range and resize freely, whereas the vanilla `Slider` class has issues with that
 
+## Adding cue
+
+Add the following lines to your CMakeLists.txt
+
+```cmake
+CPMAddPackage("gh:dankmeme01/cue#main") # prefer a specific commit over main
+target_link_libraries(${PROJECT_NAME} PRIVATE cue)
+```
+
 # In-depth overviews
 
 ## ListNode

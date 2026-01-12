@@ -151,8 +151,13 @@ void ListNode::insertListCell(ListCell* cell, size_t index) {
     cell->setOpacity(col.a);
 
     m_scrollLayer->m_contentLayer->addChild(cell, index);
+    this->resortCellArray();
 
-    if (m_autoUpdate) this->updateLayout();
+    if (m_autoUpdate) {
+        this->updateLayout();
+    } else {
+        this->resortCellArray();
+    }
 }
 
 void ListNode::removeCell(size_t index) {
@@ -170,7 +175,12 @@ void ListNode::removeCell(ListCell* cell) {
     }
 
     m_scrollLayer->m_contentLayer->removeChild(cell);
-    if (m_autoUpdate) this->updateLayout();
+
+    if (m_autoUpdate) {
+        this->updateLayout();
+    } else {
+        this->resortCellArray();
+    }
 }
 
 size_t ListNode::indexForCell(ListCell* cell) {
@@ -205,7 +215,13 @@ void ListNode::setOverscrollEnabled(bool enabled) {
     m_overscroll = enabled;
 }
 
+void ListNode::resortCellArray() {
+    m_scrollLayer->m_contentLayer->sortAllChildren();
+}
+
 void ListNode::updateLayout(bool preserveScroll) {
+    this->resortCellArray();
+
     auto scroll = this->getScrollPos();
 
     // update cell colors and heights

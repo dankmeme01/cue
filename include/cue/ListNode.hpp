@@ -107,11 +107,10 @@ public:
             cell->setZOrder(i);
         }
 
-        // little hack to update the children order
-        m_scrollLayer->m_contentLayer->sortAllChildren();
-
         if (m_autoUpdate) {
             this->updateLayout();
+        } else {
+            this->resortCellArray();
         }
     }
 
@@ -184,6 +183,9 @@ protected:
     bool init(cocos2d::CCSize size, cocos2d::ccColor4B bgColor, ListBorderStyle borderStyle);
     void update(float dt);
     float contentSize();
+
+    /// This should be called whenever changes are made to z orders of cells, to update the order
+    void resortCellArray();
 
     cocos2d::ccColor4B getCellColor(size_t index);
 
