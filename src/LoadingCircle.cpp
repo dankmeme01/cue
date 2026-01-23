@@ -41,14 +41,14 @@ void LoadingCircle::addToLayer(cocos2d::CCNode* layer, int zOrder) {
 }
 
 void LoadingCircle::fadeOut() {
-    this->stopAllActions();
-    this->runAction(
-        CCSequence::create(
-            CCFadeTo::create(0.25f, 0),
-            CCCallFunc::create(this, callfunc_selector(LoadingCircle::deactivate)),
-            nullptr
-        )
+    this->stopActionByTag(0);
+    auto action = CCSequence::create(
+        CCFadeTo::create(0.25f, 0),
+        CCCallFunc::create(this, callfunc_selector(LoadingCircle::deactivate)),
+        nullptr
     );
+    action->setTag(0);
+    this->runAction(action);
 }
 
 void LoadingCircle::deactivate() {
@@ -62,7 +62,9 @@ void LoadingCircle::fadeIn() {
     this->setVisible(true);
     this->onEnter();
     this->setOpacity(0);
-    this->runAction(CCFadeTo::create(0.25f, 255));
+    auto action = CCFadeTo::create(0.25f, 255);
+    action->setTag(0);
+    this->runAction(action);
 }
 
 LoadingCircle* LoadingCircle::create(bool spinByDefault) {
