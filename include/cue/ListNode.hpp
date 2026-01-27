@@ -61,6 +61,8 @@ public:
     /// Create a `ListNode` styled for levels, using a brown background and the green-blue border style seen in the game.
     static ListNode* createLevels(cocos2d::CCSize size);
 
+    geode::ScrollLayer* getScrollLayer();
+
     size_t size();
     ListCell* getCell(size_t index);
     cocos2d::CCArray* getCells();

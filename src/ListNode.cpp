@@ -112,6 +112,10 @@ size_t ListNode::size() {
     return m_scrollLayer->m_contentLayer->getChildrenCount();
 }
 
+geode::ScrollLayer* ListNode::getScrollLayer() {
+    return m_scrollLayer;
+}
+
 ListCell* ListNode::getCell(size_t index) {
     if (index >= this->size()) return nullptr;
 
