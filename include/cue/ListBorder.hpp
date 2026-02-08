@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Geode/Geode.hpp>
+#include <Geode/utils/cocos.hpp>
 
 namespace cue {
 
@@ -23,7 +23,6 @@ public:
 
 protected:
     cocos2d::ccColor4B m_bgColor;
-    geode::Ref<cocos2d::extension::CCScale9Sprite> m_borderSprite;
 
     bool init(Type type, cocos2d::CCSize size, cocos2d::ccColor4B color);
 };

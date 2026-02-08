@@ -42,7 +42,7 @@ void rescaleToMatchY(cocos2d::CCNode* node, float targetHeight) {
     node->setScaleY(targetHeight / node->getContentHeight());
 }
 
-CCScale9Sprite* attachBackground(
+NineSlice* attachBackground(
     CCNode* node,
     const BackgroundOptions& options
 ) {
@@ -59,7 +59,7 @@ CCScale9Sprite* attachBackground(
     return spr;
 }
 
-CCScale9Sprite* createBackground(
+NineSlice* createBackground(
     CCSize size,
     const BackgroundOptions& options
 ) {
@@ -73,7 +73,7 @@ CCScale9Sprite* createBackground(
     float scaleX = 1.f, scaleY = 1.f;
     float roundness = options.cornerRoundness;
 
-    auto spr = CCScale9Sprite::create(options.texture);
+    auto spr = NineSlice::create(options.texture);
     auto bgSize = spr->getContentSize();
 
     if (size.width < bgSize.width) {
@@ -87,6 +87,10 @@ CCScale9Sprite* createBackground(
     if (options.scaleMustMatch) {
         scaleX = scaleY = std::min(scaleX, scaleY);
     }
+
+    float roundnessMult = std::powf(1.8f, roundness);
+    scaleX *= roundnessMult;
+    scaleY *= roundnessMult;
 
     spr->setContentSize({size.width / scaleX, size.height / scaleY});
     spr->setScaleX(scaleX);

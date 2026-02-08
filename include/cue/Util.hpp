@@ -1,6 +1,6 @@
 #pragma once
 #include <Geode/utils/cocos.hpp>
-#include <Geode/cocos/extensions/GUI/CCControlExtension/CCScale9Sprite.h> // bruh
+#include <Geode/ui/NineSlice.hpp>
 #include <type_traits>
 #include <string>
 
@@ -32,9 +32,8 @@ struct BackgroundOptions {
     float sidePadding = 3.f;
     float verticalPadding = 3.f;
 
-    // 0 = square, 1 = slightly rounded (depends on texture though)
-    // TODO: currently unused
-    float cornerRoundness = 1.f;
+    // 0 = no extra rounding, negative = more square, positive = more round, 1 = more circle
+    float cornerRoundness = 0.f;
 
     bool scaleMustMatch = true; // determines if scalex must be equal to scaley (impacts how pretty the corners are)
     const char* texture = "square02_001.png";
@@ -45,7 +44,7 @@ struct BackgroundOptions {
 /// Attach a CCScale9Sprite background to a node.
 /// This calls `createBackground` and adds the background as a child to the given node,
 /// for more information check `createBackground`.
-cocos2d::extension::CCScale9Sprite* attachBackground(
+geode::NineSlice* attachBackground(
     cocos2d::CCNode* node,
     const BackgroundOptions& options = BackgroundOptions{}
 );
@@ -53,7 +52,7 @@ cocos2d::extension::CCScale9Sprite* attachBackground(
 /// Creates a CCScale9Sprite background with the given options and size.
 /// See the `BackgroundOptions` struct for all the options.
 /// Note: `sidePadding` and `verticalPadding` settings have no effect, change the `size` parameter instead.
-cocos2d::extension::CCScale9Sprite* createBackground(
+geode::NineSlice* createBackground(
     cocos2d::CCSize size,
     const BackgroundOptions& options = BackgroundOptions{}
 );

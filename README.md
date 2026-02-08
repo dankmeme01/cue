@@ -7,7 +7,7 @@ Currently available:
 * `cue::ListNode` - an extensive list class with user friendly interface. See below for a more in-depth showcase.
 * `cue::DropdownNode` - an expandable list that can have dynamic and arbitrary contents.
 * `cue::RepeatingBackground` - a customizable repeating background, similar to the one used in GD levels and MenuLayer, or some Globed layers.
-* `cue::attachBackground(node)` - a handy util function that attaches a slightly dark `CCScale9Sprite` behind the given node. All the details about it are customizable.
+* `cue::attachBackground(node)` - a handy util function that attaches a slightly dark `geode::NineSlice` behind the given node. All the details about it are customizable.
 * plus some other useful helper functions!
 * `cue::PlayerIcon` - a simple wrapper around `SimplePlayer` that has a correct content size and makes it simple to set the displayed icon.
 * `cue::LoadingCircle` - a properly functioning `LoadingCircle`
