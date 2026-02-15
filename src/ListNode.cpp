@@ -69,6 +69,7 @@ bool ListNode::init(cocos2d::CCSize size, cocos2d::ccColor4B bgColor, ListBorder
             ->setAxisReverse(true)
             ->setAxisAlignment(AxisAlignment::End)
             ->setAutoGrowAxis(size.height)
+            ->ignoreInvisibleChildren(false)
     );
 
     this->setContentSize(size);

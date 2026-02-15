@@ -1,6 +1,7 @@
 #include <Geode/utils/string.hpp> // awesome geode fix
 #include <Geode/utils/terminate.hpp>
 #include <cue/ListBorder.hpp>
+#include <Geode/ui/General.hpp>
 
 using namespace geode::prelude;
 
