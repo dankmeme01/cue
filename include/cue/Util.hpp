@@ -99,4 +99,10 @@ inline cocos2d::CCPoint fromBottom(cocos2d::CCNode* node, float offset = 0.f) {
     };
 }
 
+// Returns (node->x + node->width / 2.f, node->y + node->height / 2.f) + offset
+inline cocos2d::CCPoint fromTopRight(cocos2d::CCNode* node, cocos2d::CCPoint offset) {
+    auto size = node->getScaledContentSize();
+    return node->getPosition() + size / 2.f + offset;
+}
+
 }

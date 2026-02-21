@@ -1,7 +1,6 @@
 #pragma once
 #include <Geode/utils/cocos.hpp>
 #include <Geode/utils/function.hpp>
-#include <memory>
 #include <variant>
 
 namespace cue {
