@@ -13,6 +13,7 @@ Currently available:
 * `cue::LoadingCircle` - a properly functioning `LoadingCircle`
 * `cue::ProgressBar` - a simple resizable progress bar class, similar to the one GD has
 * `cue::Slider` - a convenient slider class, allows to set value range and resize freely, whereas the vanilla `Slider` class has issues with that
+* `cue::RadioLogic` - a boilerplate-free way to create radio buttons
 
 ## Adding cue
 
@@ -91,4 +92,58 @@ for (size_t i = 0; i < 65536; i++) {
 // enable auto update back and update the list manually
 list->setAutoUpdate(true);
 list->updateLayout();
+```
+
+## RadioLogic
+
+The main class for creating radio buttons is `RadioLogic`. Internally it uses GD's `CCMenuItemToggler`, but saves you from writing all the boilerplate of ensuring choice exclusivity. The lifetime of the `RadioLogic` class is not important for the buttons to work - if you simply want to use the per-button callbacks, you don't need to store it after creating all buttons. However, it enables some additional convenience methods such as getting the currently selected button, tagging buttons with enums, etc.
+
+```cpp
+cue::RadioLogic radio;
+
+// create a standard checkbox toggler with optional callback and scale adjustment
+auto toggler1 = radio.createToggler();
+auto toggler2 = radio.createToggler(0.8f);
+auto toggler3 = radio.createToggler(0.8f, [](CCMenuItemToggler* toggler) {
+    // called only when this toggler gets *enabled*
+});
+
+// `RadioLogic` internally uses `shared_ptr` and can be copied to refer to the same instance.
+radio.setCallback([radio](CCMenuItemToggler* toggler) {
+    // this gets called when any toggler gets enabled
+});
+
+// get index of the selected toggler, 0 being the first added toggler
+size_t sel = radio.getSelected();
+
+// select the button of the given index. avoid calling inside callbacks for the same radio logic
+radio.select(1);
+```
+
+Note that none of this handles positioning - it's completely up to you to add these togglers to a node. RadioLogic handles only the actual logic behind toggler presses.
+
+As said earlier, you can also assign enums to your togglers!
+
+```cpp
+enum class Which {
+    First,
+    Second,
+};
+
+cue::RadioLogic<Which> radio;
+
+// When a template argument is specified, first argument is of that type
+auto toggler1 = radio.createToggler(Which::First);
+auto toggler2 = radio.createToggler(Which::Second, 0.8f);
+
+// The callback may also now have 3 signatures:
+// * (CCMenuItemToggler*)
+// * (CCMenuItemToggler*, Which)
+// * (Which)
+radio.setCallback([radio](Which which) {
+    // called with whatever button got enabled
+});
+
+Which sel = radio.getSelected();
+radio.select(Which::Second);
 ```

@@ -14,6 +14,14 @@ inline T into(const T& from) {
     return from;
 }
 
+template<> inline cocos2d::ccColor3B into(const cocos2d::ccColor4B& value) {
+    return cocos2d::ccColor3B{value.r, value.g, value.b};
+}
+
+template<> inline cocos2d::ccColor4B into(const cocos2d::ccColor3B& value) {
+    return cocos2d::ccColor4B{value.r, value.g, value.b, 255};
+}
+
 // set the scale for `node` in a way that `node->getScaledContentSize()` will match `target->getScaledContentSize()`
 void rescaleToMatch(cocos2d::CCNode* node, cocos2d::CCNode* target, bool stretch = false);
 
