@@ -136,6 +136,11 @@ void Slider::ccTouchEnded(cocos2d::CCTouch* touch, cocos2d::CCEvent* event) {
     m_thumb->setState(false);
 }
 
+void Slider::ccTouchCancelled(cocos2d::CCTouch *touch, cocos2d::CCEvent* event) {
+    CCMenu::ccTouchCancelled(touch, event);
+    m_thumb->setState(false);
+}
+
 void Slider::ccTouchMoved(CCTouch* touch, CCEvent* event) {
     CCMenu::ccTouchMoved(touch, event);
 

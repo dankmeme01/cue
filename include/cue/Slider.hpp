@@ -38,7 +38,7 @@ public:
 
     bool ccTouchBegan(cocos2d::CCTouch* touch, cocos2d::CCEvent* event) override;
     void ccTouchEnded(cocos2d::CCTouch* touch, cocos2d::CCEvent* event) override;
-    // void ccTouchCancelled(cocos2d::CCTouch *touch, cocos2d::CCEvent* event) override {}
+    void ccTouchCancelled(cocos2d::CCTouch *touch, cocos2d::CCEvent* event) override;
     void ccTouchMoved(cocos2d::CCTouch* touch, cocos2d::CCEvent* event) override;
 
     class Thumb : public cocos2d::CCNode {
