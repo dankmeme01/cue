@@ -21,7 +21,7 @@ Add the following lines to your CMakeLists.txt
 
 ```cmake
 CPMAddPackage("gh:dankmeme01/cue#main") # prefer a specific commit over main
-target_link_libraries(${PROJECT_NAME} PRIVATE cue)
+target_link_libraries(${PROJECT_NAME} cue)
 ```
 
 # In-depth overviews
