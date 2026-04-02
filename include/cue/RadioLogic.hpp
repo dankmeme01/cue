@@ -116,13 +116,42 @@ public:
     // Enum mode
 
     auto createToggler(SelIndex tag, float scale = 1.0f, geode::Function<void(CCMenuItemToggler*)> callback = {}) requires (EnumMode) {
-        auto toggler = geode::cocos::CCMenuItemExt::createTogglerWithStandardSprites(scale, +[](CCMenuItemToggler* toggler) {
-            auto impl = static_cast<Impl*>(toggler->getUserObject(OBJECT_ID));
-            impl->onClicked(toggler);
-        });
+        auto toggler = geode::cocos::CCMenuItemExt::createTogglerWithStandardSprites(scale, &togglerCallback);
+        return doTogglerSetup(toggler, tag, std::move(callback));
+    }
+
+    auto createToggler(
+        SelIndex tag,
+        cocos2d::CCNode* onSprite,
+        cocos2d::CCNode* offSprite,
+        geode::Function<void(CCMenuItemToggler*)> callback = {}
+    ) requires (EnumMode) {
+        auto toggler = geode::cocos::CCMenuItemExt::createToggler(onSprite, offSprite, &togglerCallback);
+        return doTogglerSetup(toggler, tag, std::move(callback));
+    }
+
+    // Plain mode
+
+    auto createToggler(float scale = 1.0f, geode::Function<void(CCMenuItemToggler*)> callback = {}) requires (!EnumMode) {
+        auto toggler = geode::cocos::CCMenuItemExt::createTogglerWithStandardSprites(scale, &togglerCallback);
+        return doTogglerSetup(toggler, std::nullopt, std::move(callback));
+    }
+
+    auto createToggler(
+        cocos2d::CCNode* onSprite,
+        cocos2d::CCNode* offSprite,
+        geode::Function<void(CCMenuItemToggler*)> callback = {}
+    ) requires (!EnumMode) {
+        auto toggler = geode::cocos::CCMenuItemExt::createToggler(onSprite, offSprite, &togglerCallback);
+        return doTogglerSetup(toggler, std::nullopt, std::move(callback));
+    }
+
+private:
+    template <typename F>
+    auto doTogglerSetup(CCMenuItemToggler* toggler, std::optional<SelIndex> tag, F&& callback) {
         toggler->setUserObject(OBJECT_ID, m_impl);
 
-        m_impl->m_togglers.emplace_back(toggler, tag, std::move(callback));
+        m_impl->m_togglers.emplace_back(toggler, tag.value_or(m_impl->m_togglers.size()), std::forward<F>(callback));
         if (m_impl->m_togglers.size() == 1) {
             // select this toggler
             m_impl->select(m_impl->m_togglers.front(), false);
@@ -131,22 +160,9 @@ public:
         return toggler;
     }
 
-    // Plain mode
-
-    auto createToggler(float scale = 1.0f, geode::Function<void(CCMenuItemToggler*)> callback = {}) requires (!EnumMode) {
-        auto toggler = geode::cocos::CCMenuItemExt::createTogglerWithStandardSprites(scale, +[](CCMenuItemToggler* toggler) {
-            auto impl = static_cast<Impl*>(toggler->getUserObject(OBJECT_ID));
-            impl->onClicked(toggler);
-        });
-        toggler->setUserObject(OBJECT_ID, m_impl);
-
-        m_impl->m_togglers.emplace_back(toggler, m_impl->m_togglers.size(), std::move(callback));
-        if (m_impl->m_togglers.size() == 1) {
-            // select this toggler
-            m_impl->select(m_impl->m_togglers.front(), false);
-        }
-
-        return toggler;
+    static void togglerCallback(CCMenuItemToggler* toggler) {
+        auto impl = static_cast<Impl*>(toggler->getUserObject(OBJECT_ID));
+        impl->onClicked(toggler);
     }
 };
 
