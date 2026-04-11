@@ -151,7 +151,7 @@ private:
     auto doTogglerSetup(CCMenuItemToggler* toggler, std::optional<SelIndex> tag, F&& callback) {
         toggler->setUserObject(OBJECT_ID, m_impl);
 
-        m_impl->m_togglers.emplace_back(toggler, tag.value_or(m_impl->m_togglers.size()), std::forward<F>(callback));
+        m_impl->m_togglers.emplace_back(toggler, tag.value_or((SelIndex)m_impl->m_togglers.size()), std::forward<F>(callback));
         if (m_impl->m_togglers.size() == 1) {
             // select this toggler
             m_impl->select(m_impl->m_togglers.front(), false);
