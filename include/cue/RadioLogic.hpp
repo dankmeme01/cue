@@ -6,6 +6,9 @@
 namespace cue {
 
 template <typename Val = std::monostate>
+class WeakRadioLogic;
+
+template <typename Val = std::monostate>
 class RadioLogic {
 private:
     static constexpr const char* OBJECT_ID = "dankmeme.cue/RadioLogic";
@@ -83,7 +86,11 @@ private:
     geode::Ref<Impl> m_impl;
 
 public:
+    friend class WeakRadioLogic<Val>;
+
     RadioLogic() : m_impl(geode::Ref<Impl>::adopt(new Impl{})) {}
+    RadioLogic(geode::Ref<Impl> impl) : m_impl(std::move(impl)) {}
+
     RadioLogic(const RadioLogic& other) = default;
     RadioLogic& operator=(const RadioLogic& other) = default;
     RadioLogic(RadioLogic&& other) noexcept = default;
@@ -164,6 +171,28 @@ private:
         auto impl = static_cast<Impl*>(toggler->getUserObject(OBJECT_ID));
         impl->onClicked(toggler);
     }
+};
+
+template <typename Val>
+class WeakRadioLogic {
+public:
+    WeakRadioLogic() = default;
+    WeakRadioLogic(const RadioLogic<Val>& logic) : m_logic(logic.m_impl) {}
+    WeakRadioLogic(const WeakRadioLogic& logic) = default;
+    WeakRadioLogic& operator=(const WeakRadioLogic& logic) = default;
+    WeakRadioLogic(WeakRadioLogic&& logic) noexcept = default;
+    WeakRadioLogic& operator=(WeakRadioLogic&& logic) noexcept = default;
+
+    std::optional<RadioLogic<Val>> lock() const {
+        if (auto impl = m_logic.lock()) {
+            return RadioLogic<Val>{ std::move(impl) };
+        }
+        return std::nullopt;
+    }
+
+private:
+    using Impl = typename RadioLogic<Val>::Impl;
+    geode::WeakRef<Impl> m_logic;
 };
 
 }

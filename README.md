@@ -108,8 +108,9 @@ auto toggler3 = radio.createToggler(0.8f, [](CCMenuItemToggler* toggler) {
     // called only when this toggler gets *enabled*
 });
 
-// `RadioLogic` internally uses `shared_ptr` and can be copied to refer to the same instance.
-radio.setCallback([radio](CCMenuItemToggler* toggler) {
+// `RadioLogic` internally uses `Ref` and can be copied to refer to the same instance.
+// It can also be converted to `WeakRadioLogic` to prevent ref cycles, which is required for the callback.
+radio.setCallback([radio = WeakRadioLogic{radio}](CCMenuItemToggler* toggler) {
     // this gets called when any toggler gets enabled
 });
 
@@ -140,7 +141,7 @@ auto toggler2 = radio.createToggler(Which::Second, 0.8f);
 // * (CCMenuItemToggler*)
 // * (CCMenuItemToggler*, Which)
 // * (Which)
-radio.setCallback([radio](Which which) {
+radio.setCallback([](Which which) {
     // called with whatever button got enabled
 });
 
