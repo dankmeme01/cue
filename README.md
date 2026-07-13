@@ -40,6 +40,8 @@ for (size_t i = 0; i < 10; i++) {
 }
 ```
 
+![List of labels from the code above](screenshots/list-node-basic.png)
+
 Performing various operations on the list is also very simple. Here are some examples:
 
 Adding, removing, retrieving cells
